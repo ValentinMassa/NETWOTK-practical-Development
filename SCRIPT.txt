@@ -1,0 +1,47 @@
+
+import requests 
+import json 
+
+baseUri = "http://172.16.50.2/api/v1" #URL de PT
+
+# Llamada al API por el ticket
+headers = {"Content-Type": "application/json"} #Headers
+data = json.dumps({"username": "cisco", "password": "class"}) 
+resp = requests.post(baseUri+"/ticket", data=data, headers=headers) 
+
+print("Status de Solicitud:")
+print(resp.status_code)
+result = resp.json()
+# print(result)
+
+
+ticket = result["response"]["serviceTicket"] 
+print("\nEl Service Ticket es:")
+print(ticket)
+
+#cantidad de host totales
+
+headers = {"X-Auth-Token": ticket }
+resp = requests.get(baseUri+"/host/count", headers=headers) 
+
+result = resp.json()
+print("\nListado de Host\n:")
+print (json.dumps(result, indent=4))
+
+#salud de la topologia
+
+headers = {"X-Auth-Token": ticket }
+resp = requests.get(baseUri+"/assurance/health", headers=headers) 
+
+result = resp.json()
+print("\nSalud del Sistema\n:")
+print(json.dumps(result, indent=4))
+
+#Ver Usuario
+
+headers = {"X-Auth-Token": ticket }
+resp = requests.get(baseUri+"/user", headers=headers) 
+
+result = resp.json()
+print("\nVer Datos Usuario/credencial\n:")
+print(json.dumps(result, indent=4))
